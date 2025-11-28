@@ -1,0 +1,16 @@
+<ion-button expand="full" (click)="refreshExpenseList()">
+  Refresh
+</ion-button>
+
+@if (expenseList() === null) {
+  <ion-content>No expenses available!</ion-content>
+} @else {
+  <ion-list>
+    @for (expense of expenseList(); track expense.id) {
+      <app-expense-item
+        [expense]="expense"
+        (deleteExpenseEvent)="deleteExpense($event)"
+      />
+    }
+  </ion-list>
+}

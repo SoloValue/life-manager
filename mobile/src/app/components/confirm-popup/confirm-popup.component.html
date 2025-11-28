@@ -1,0 +1,20 @@
+<ion-modal [isOpen]="isVisible()" backdropDismiss="false">
+  <ng-template>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Confirmation</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>{{ message }}</p>
+        <ion-row class="ion-justify-content-end ion-margin-top">
+          <ion-button fill="clear" color="medium" (click)="onCancel()">
+            Cancel
+          </ion-button>
+          <ion-button (click)="onConfirm()">
+            OK
+          </ion-button>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </ng-template>
+</ion-modal>

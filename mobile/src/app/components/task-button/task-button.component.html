@@ -1,0 +1,14 @@
+<button
+type="button"
+[class]="classes()"
+[disabled]="disabled() || loading()"
+>
+<!-- Loading spinner -->
+<span *ngIf="loading()" class="animate-spin h-5 w-5 mr-2 border-2 border-current border-t-transparent rounded-full"></span>
+
+<!-- Icon slot -->
+<ng-content select="[icon]"></ng-content>
+
+<!-- Label -->
+<span *ngIf="label() && !loading()" class="whitespace-nowrap">{{ label() }}</span>
+</button>

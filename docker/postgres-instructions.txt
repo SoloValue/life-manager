@@ -1,0 +1,60 @@
+# pull image
+docker pull postgres
+
+# create a volume
+docker volume create postgres0-vol
+
+# start image
+docker run -d \
+--name=postgres0 \
+-e POSTGRES_PASSWORD=root \
+-p 5432:5432 \
+--mount type=volume,source=postgres0-vol,destination=/var/lib/postgresql/data \
+postgres
+
+# client
+docker run -it --rm \
+--link postgres0:postgres \
+postgres psql -h postgres -U postgres life_manager
+
+# create table
+SET TIME ZONE 'Europe/Rome';
+
+CREATE TYPE expenses_type AS ENUM
+('house', 'groceries', 'love');
+
+CREATE TABLE expenses (
+    id SERIAL PRIMARY KEY,
+    category expenses_type NOT NULL,
+    description TEXT DEFAULT NULL,
+    value FLOAT(24) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL
+);
+
+INSERT INTO expenses
+(category, description, value, created_at) VALUES
+('house', 'piante aromatiche', 12.31, '2025-06-06 16:00:27'),
+('house', 'interesse mutuo', 373.33, '2025-06-06 12:00:27'),
+('groceries', 'spesa', 64.20, '2025-06-02 12:40:27');
+
+CREATE TYPE role_level AS ENUM
+('admin', 'user');
+
+CREATE TABLE users (
+    name VARCHAR(20) PRIMARY KEY,
+    role role_level NOT NULL
+);
+
+CREATE TABLE date_requests (
+    id SERIAL PRIMARY KEY,
+    description TEXT NOT NULL,
+    planned_date TIMESTAMPTZ NOT NULL,
+    duration_minutes INT,
+    created_by TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL
+);
+
+INSERT INTO date_requests
+(description, planned_date, duration_minutes, created_by, created_at)
+VALUES
+('Cute date', '2025-10-12 16:00:00', 120, 'Matteo', '2025-10-11 15:12:01');

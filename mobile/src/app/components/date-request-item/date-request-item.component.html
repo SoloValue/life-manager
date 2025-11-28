@@ -1,0 +1,15 @@
+<ion-item>
+  <ion-label>
+    <h3>{{date_request()!.id}}</h3>
+    <p>{{date_request()!.description}}</p>
+    <p>{{date_request()!.planned_date}} - {{date_request()!.duration_minutes}}</p>
+  </ion-label>
+  <ion-button
+    color="danger"
+    fill="clear"
+    slot="end"
+    (click)="onDeleteClick()"
+  >
+    <ion-icon name="trash" slot="icon-only"></ion-icon>
+  </ion-button>
+</ion-item>

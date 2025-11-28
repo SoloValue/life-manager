@@ -1,0 +1,9 @@
+<ion-alert
+  [isOpen]="isVisible()"
+  (didDismiss)="closePopup()"
+
+  header="{{header}}"
+  subHeader="{{subHeader}}"
+  message="{{message}}"
+  [buttons]="buttons()"
+></ion-alert>
