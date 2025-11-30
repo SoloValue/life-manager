@@ -5,14 +5,13 @@ import {
   Signal,
   signal,
 } from "@angular/core";
-import { IonAlert } from "@ionic/angular/standalone";
 import { AlertService } from "src/app/services/alert.service";
 
 @Component({
   selector: "app-alert",
   templateUrl: "./alert.component.html",
   styleUrls: ["./alert.component.scss"],
-  imports: [IonAlert],
+  imports: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlertComponent {

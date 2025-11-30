@@ -1,11 +1,10 @@
 import { Component, ChangeDetectionStrategy, computed } from "@angular/core";
-import { IonicModule } from "@ionic/angular";
 import { ConfirmPopupService } from "src/app/services/confirm-popup.service";
 
 @Component({
   selector: "app-confirm-popup",
   templateUrl: "./confirm-popup.component.html",
-  imports: [IonicModule],
+  imports: [],
   styleUrls: ["./confirm-popup.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

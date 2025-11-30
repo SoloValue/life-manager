@@ -1,7 +1,0 @@
-{
-  "name": "life-manager",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular-standalone"
-}
