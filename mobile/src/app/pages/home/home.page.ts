@@ -9,8 +9,6 @@ import { TaskButtonComponent } from "src/app/components/task-button/task-button.
   imports: [TaskButtonComponent, IconComponent],
 })
 export class HomePage {
-  constructor() {}
-
   goToTaks(task: string) {
     console.log("Moving to " + task);
   }

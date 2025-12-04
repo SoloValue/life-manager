@@ -2,6 +2,25 @@
 <app-alert /> -->
 
 <div class="h-screen">
-<!-- <div> -->
-    <router-outlet></router-outlet>
+    <div class="flex flex-row flex-wrap">
+        <!------------- NAVBAR ------------->
+        <app-navbar />
+        <!------------- /NAVBAR ------------->
+
+        <div class="w-full flex flex-row flex-wrap">
+            <!------------- LEFT SIDEBAR ------------->
+            <div class="basis-1/12 -order-1"></div>
+            <!------------- /LEFT SIDEBAR ------------->
+
+            <!------------- RIGHT SIDEBAR ------------->
+            <div class="basis-1/12 order-1"></div>
+            <!------------- /RIGHT SIDEBAR ------------->
+
+            <!------------- MAIN CONTENT ------------->
+            <div class="basis-10/12 order-0">
+                <router-outlet></router-outlet>
+            </div>
+            <!------------- /MAIN CONTENT ------------->
+        </div>
+    </div>
 </div>
