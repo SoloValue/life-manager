@@ -9,5 +9,4 @@
  * https://ionicframework.com/docs/layout/global-stylesheets
  */
 @use "tailwindcss";
-@source inline("{hover:,}bg-orange-{50,{100..900..100},950}");
 @source inline("size-{1..50..1}");

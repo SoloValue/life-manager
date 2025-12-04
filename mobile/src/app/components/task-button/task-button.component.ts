@@ -9,7 +9,6 @@ import { Component, computed, input, output } from "@angular/core";
 })
 export class TaskButtonComponent {
   color = input<ColorType>("red");
-  colorIntensity = input<ColorIntensityType>("500");
   size = input<string>("10");
   loading = input<boolean>(false);
   disabled = input<boolean>(false);
@@ -23,7 +22,6 @@ export class TaskButtonComponent {
   /** Computed Tailwind class list */
   classes = computed(() => {
     const color = this.color();
-    const colorIntensity = this.colorIntensity();
     const size = this.size();
     const tokens = this.tokens();
 
@@ -38,28 +36,28 @@ export class TaskButtonComponent {
     ];
 
     const colorClass = {
-      red: "bg-red-" + colorIntensity,
-      orange: "bg-orange-" + colorIntensity,
-      amber: "bg-amber-" + colorIntensity,
-      yellow: "bg-yellow-" + colorIntensity,
-      lime: "bg-lime-" + colorIntensity,
-      green: "bg-green-" + colorIntensity,
-      emerald: "bg-emerald-" + colorIntensity,
-      teal: "bg-teal-" + colorIntensity,
-      cyan: "bg-cyan-" + colorIntensity,
-      sky: "bg-sky-" + colorIntensity,
-      blue: "bg-blue-" + colorIntensity,
-      indigo: "bg-indigo-" + colorIntensity,
-      violet: "bg-violet-" + colorIntensity,
-      purple: "bg-purple-" + colorIntensity,
-      fuchsia: "bg-fuchsia-" + colorIntensity,
-      pink: "bg-pink-" + colorIntensity,
-      rose: "bg-rose-" + colorIntensity,
-      slate: "bg-slate-" + colorIntensity,
-      gray: "bg-gray-" + colorIntensity,
-      zinc: "bg-zinc-" + colorIntensity,
-      neutral: "bg-neutral-" + colorIntensity,
-      stone: "bg-stone-" + colorIntensity,
+      red: "bg-red-500",
+      orange: "bg-orange-500",
+      amber: "bg-amber-500",
+      yellow: "bg-yellow-500",
+      lime: "bg-lime-500",
+      green: "bg-green-500",
+      emerald: "bg-emerald-500",
+      teal: "bg-teal-500",
+      cyan: "bg-cyan-500",
+      sky: "bg-sky-500",
+      blue: "bg-blue-500",
+      indigo: "bg-indigo-500",
+      violet: "bg-violet-500",
+      purple: "bg-purple-500",
+      fuchsia: "bg-fuchsia-500",
+      pink: "bg-pink-500",
+      rose: "bg-rose-500",
+      slate: "bg-slate-500",
+      gray: "bg-gray-500",
+      zinc: "bg-zinc-500",
+      neutral: "bg-neutral-500",
+      stone: "bg-stone-500",
     }[color];
 
     const sizeClass = `size-${size}`;
@@ -94,15 +92,3 @@ type ColorType =
   | "zinc"
   | "neutral"
   | "stone";
-type ColorIntensityType =
-  | "50"
-  | "100"
-  | "200"
-  | "300"
-  | "400"
-  | "500"
-  | "600"
-  | "700"
-  | "800"
-  | "900"
-  | "950";
