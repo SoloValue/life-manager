@@ -92,7 +92,7 @@ pub async fn delete_expense(
 
 #[get("/categories")]
 pub async fn get_categories() -> ApiResult<Json<Vec<&'static str>>> {
-    logging("GET /expenses/catefories");
+    logging("GET /expenses/categories");
     let exp_vector = ExpenseCategory::get_all();
     let a = exp_vector.iter().map(|exp| exp.as_str()).collect();
     Ok(Json(a))
