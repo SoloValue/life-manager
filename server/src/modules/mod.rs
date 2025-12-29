@@ -1,5 +1,6 @@
 pub mod date_requests;
 pub mod expenses;
+pub mod groceries;
 
 use actix_web::{
     HttpResponse,
@@ -7,7 +8,7 @@ use actix_web::{
     http::{StatusCode, header::ContentType},
 };
 
-#[derive(Debug)]
+#[derive(Debug)] // TODO move to expenses/route.rs
 pub enum ExpenseApiError {
     ServerError,
     ExpenseNotFound,

@@ -58,3 +58,11 @@ INSERT INTO date_requests
 (description, planned_date, duration_minutes, created_by, created_at)
 VALUES
 ('Cute date', '2025-10-12 16:00:00', 120, 'Matteo', '2025-10-11 15:12:01');
+
+CREATE TABLE groceries (
+    name VARCHAR(30) PRIMARY KEY,
+    to_buy BOOLEAN NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL
+);
+
+INSERT INTO groceries VALUES ('test', true, '2025-10-12 16:00:00'), ('zucchine', true, '2025-10-12 16:00:00'), ('riso basmati', false, '2025-10-12 16:00:00');

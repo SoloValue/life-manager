@@ -16,6 +16,7 @@ use server::modules::date_requests::route::{
 use server::modules::expenses::route::{
     create_expense, delete_expense, get_categories, get_expenses,
 };
+use server::modules::groceries::route::{edit_grocery, get_groceries};
 
 #[actix_web::main]
 async fn main() -> Result<()> {
@@ -40,7 +41,7 @@ async fn main() -> Result<()> {
         // Configure CORS
         let cors = Cors::default()
             .allowed_origin("http://localhost:4200") // DEV frontend
-            .allowed_methods(vec!["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+            .allowed_methods(vec!["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"])
             .allowed_headers(vec![
                 http::header::CONTENT_TYPE,
                 http::header::AUTHORIZATION,
@@ -59,6 +60,11 @@ async fn main() -> Result<()> {
                     .service(create_expense)
                     .service(delete_expense)
                     .service(get_categories),
+            )
+            .service(
+                web::scope("/groceries")
+                    .service(get_groceries)
+                    .service(edit_grocery),
             )
             .service(
                 web::scope("/date_requests")

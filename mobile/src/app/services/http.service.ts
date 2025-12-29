@@ -50,6 +50,31 @@ export class HttpService {
     // .pipe(catchError(this.handleError));
   }
 
+  ///////////////////////
+  /////  GROCERIES  /////
+  ///////////////////////
+
+  public getGroceries() {
+    return this.httpClient.get(`${this.HTTP_ADDRESS}/groceries`, {
+      observe: "response",
+      responseType: "json",
+    });
+  }
+
+  public editGroceryItem(name: string, new_val: boolean) {
+    return this.httpClient.patch(
+      `${this.HTTP_ADDRESS}/groceries`,
+      {
+        name: name,
+        new_value: new_val,
+      },
+      {
+        observe: "response",
+        responseType: "json",
+      },
+    );
+  }
+
   ////////////////////////
   ///// DATE REQUEST /////
   ////////////////////////

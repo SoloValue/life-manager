@@ -1,0 +1,13 @@
+<div>
+    <ul class="divide-y divide-gray-500/60 mx-3">
+        <li>
+            <div class="w-full text-center text-gray-500">Search...</div>
+        </li>
+        @for (item of groceryList(); track $index) {
+            <li class="border-s-solid border-s-2 border-s-transparent hover:border-s-violet-500 py-2">
+                <app-grocery-item [groceryItem]="item" />
+            </li>
+        }
+        <li></li>
+    </ul>
+</div>

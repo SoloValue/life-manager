@@ -1,0 +1,17 @@
+<div class="flex flex-row">
+    <div class="basis-1/4 flex justify-center">
+        <input
+            [checked]="groceryItem().to_buy"
+            [id]="groceryItem().name + '-checkbox'"
+            (change)="onBuySwitch($event)"
+            type="checkbox"
+        />
+    </div>
+    <label
+        [for]="groceryItem().name + '-checkbox'"
+        class="basis-3/4"
+        [ngClass]="{'text-white-500': groceryItem().to_buy, 'text-gray-500': !groceryItem().to_buy}"
+    >
+        {{ groceryItem().name }}
+    </label>
+</div>

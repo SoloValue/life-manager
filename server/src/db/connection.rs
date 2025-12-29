@@ -10,6 +10,11 @@ pub trait ToRow {
     fn bind_values<'a>(&'a self, qb: &mut QueryBuilder<'a, sqlx::Postgres>);
 }
 
+pub trait EditRow {
+    fn table_name() -> &'static str;
+    fn bind_edit_values<'a>(&'a self, qb: &mut QueryBuilder<'a, sqlx::Postgres>);
+}
+
 #[derive(Clone)]
 pub struct DbConnector {
     pub pool: PgPool,
@@ -62,6 +67,17 @@ impl DbConnector {
         let _ = sqlx::query(&delete_query)
             .fetch_optional(&self.pool)
             .await?;
+        Ok(())
+    }
+
+    pub async fn edit_row<T>(&self, to_edit: T) -> Result<()>
+    where
+        T: EditRow,
+    {
+        let mut qb = QueryBuilder::<Postgres>::new("");
+        to_edit.bind_edit_values(&mut qb);
+        println!("{}", &qb.sql());
+        qb.build().execute(&self.pool).await?;
         Ok(())
     }
 }

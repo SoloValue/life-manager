@@ -18,4 +18,4 @@ export class HomePage {
   }
 }
 
-type TaskType = "expenses";
+type TaskType = "expenses" | "groceries";

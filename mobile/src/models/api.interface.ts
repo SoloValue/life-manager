@@ -6,6 +6,12 @@ export interface Expense {
   created_at: string;
 }
 
+export interface GroceryItem {
+  name: string;
+  to_buy: boolean;
+  created_at: string;
+}
+
 export interface DateRequest {
   id: number;
   description: string;
