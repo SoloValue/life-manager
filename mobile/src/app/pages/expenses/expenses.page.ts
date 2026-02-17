@@ -21,7 +21,9 @@ export class ExpensesPage {
   ) {}
 
   ngOnInit(): void {
-    this.navbarService.setTitle("Expenses");
+    this.navbarService.setTitle("expenses");
+    this.navbarService.setPrimary("expenses");
+    this.navbarService.setSecondary("expenses");
     this.onAddExpense();
   }
 

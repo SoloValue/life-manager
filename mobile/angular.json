@@ -34,7 +34,11 @@
                 "output": "assets"
               }
             ],
-            "styles": ["src/global.scss", "src/theme/variables.scss"],
+            "styles": [
+              "src/global.scss",
+              "src/theme/variables.scss",
+              "src/color_palette.css"
+            ],
             "scripts": [],
             "browser": "src/main.ts"
           },

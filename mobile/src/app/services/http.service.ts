@@ -75,6 +75,20 @@ export class HttpService {
     );
   }
 
+  public createGroceryItem(name: string, to_buy?: boolean) {
+    return this.httpClient.post(
+      `${this.HTTP_ADDRESS}/groceries`,
+      {
+        name: name,
+        to_buy: to_buy,
+      },
+      {
+        observe: "response",
+        responseType: "json",
+      },
+    );
+  }
+
   ////////////////////////
   ///// DATE REQUEST /////
   ////////////////////////

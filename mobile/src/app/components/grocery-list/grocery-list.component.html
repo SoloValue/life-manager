@@ -1,8 +1,43 @@
+<!-- <div class="absolute top-20 right-5">
+    <button class="bg-violet-500 text-white size-6 m-1 rounded-md hover:bg-violet-600">
+        +
+    </button>
+</div> -->
 <div>
     <ul class="divide-y divide-gray-500/60 mx-3">
-        <li>
-            <div class="w-full text-center text-gray-500">Search...</div>
+        <li class="py-2">
+            <div class="flex flex-row">
+                <div class="basis-1/1">
+                    <input
+                        class="w-full text-center placeholder-(--text-secondary-color)"
+                        type="text"
+                        maxlength="30"
+                        placeholder="Search..."
+                        [value]="filterPar()"
+                        (input)="onFilterInput($event)"
+                    />
+                </div>
+            </div>
         </li>
+        @if (filterPar() !== "") {
+            <li
+                class="cursor-pointer text-gray-400 ps-3 py-2 border-s-2 border-s-transparent hover:border-s-green-700"
+                (click)="addNewItem()"
+            >
+                <div class="flex flex-row">
+                    <div class="basis-1/1 flex flex-row justify-evenly">
+                        <div class="basis-1/4">
+                            <div class="size-6 bg-green-700 flex justify-center items-center rounded-full">
+                                <app-icon size="5" image="insert" />
+                            </div>
+                        </div>
+                        <div class="basis-2/4 truncate">
+                            {{filterPar()}}
+                        </div>
+                    </div>
+                </div>
+            </li>
+        }
         @for (item of groceryList(); track $index) {
             <li class="border-s-solid border-s-2 border-s-transparent hover:border-s-violet-500 py-2">
                 <app-grocery-item [groceryItem]="item" />

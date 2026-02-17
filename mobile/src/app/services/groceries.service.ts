@@ -35,4 +35,19 @@ export class GroceriesService {
       }
     });
   }
+
+  public createGroceryItem(name: string, to_buy?: boolean) {
+    this.httpService.createGroceryItem(name, to_buy).subscribe((resp) => {
+      if (resp.ok) {
+        this.groceryList.update((list) => [
+          ...(list ?? []),
+          {
+            name: name,
+            to_buy: to_buy ?? true,
+            created_at: "", // TODO
+          },
+        ]);
+      }
+    });
+  }
 }

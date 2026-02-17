@@ -3,7 +3,7 @@
         <div class="basis-1/1">
             <label
                 for="category-select"
-                class="block text-sm/6 font-medium"
+                class="block text-sm/6 text-(--text-color) font-medium"
             >
                 Category
             </label>
@@ -23,15 +23,16 @@
         <div class="basis-1/1">
             <label
                 for="description-input"
-                class="block text-sm/6 font-medium"
+                class="block text-sm/6 font-medium text-(--text-color)"
             >
                 Description
             </label>
             <div class="mt-2">
                 <input
                     formControlName="description"
-                    id="description-input" type="text" name="description-input" placeholder="Max 3 words"
-                    class="block w-full rounded-lg bg-white/5 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-violet-500"
+                    id="description-input" type="text"
+                    name="description-input" placeholder="Max 3 words"
+                    class="block w-full rounded-lg bg-white/5 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-white/10 placeholder:text-(--text-secondary-color) focus:outline-2 focus:-outline-offset-2 focus:outline-violet-500"
                 />
             </div>
         </div>
@@ -39,17 +40,17 @@
         <div class="basis-1/1">
             <label
                 for="value-input"
-                class="block text-sm/6 font-medium"
+                class="block text-sm/6 font-medium text-(--text-color)"
             >
                 Value
             </label>
             <div class="mt-2">
                 <div class="flex items-center rounded-md bg-white/5 pl-3 outline-1 -outline-offset-1 outline-white/10 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-500">
-                    <div class="shrink-0 text-base text-gray-400 select-none sm:text-sm/6">€</div>
+                    <div class="shrink-0 text-base text-(--text-color) select-none sm:text-sm/6">€</div>
                     <input
                         formControlName="value"
                         id="value-input" type="text" name="value-input" placeholder="xx.x"
-                        class="block w-full rounded-lg bg-transparent px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-none placeholder:text-gray-400 focus:outline-2 focus:outline-none focus:outline-violet-500"
+                        class="block w-full rounded-lg bg-transparent px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-none placeholder:text-(--text-secondary-color) focus:outline-2 focus:outline-none focus:outline-violet-500"
                     />
                 </div>
             </div>

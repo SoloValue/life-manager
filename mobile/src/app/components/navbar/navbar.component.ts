@@ -12,6 +12,8 @@ import { IconComponent } from "../icon/icon.component";
 })
 export class NavbarComponent {
   title = computed(() => this.navbarService.tile());
+  primary = computed(() => this.navbarService.primary());
+  secondary = computed(() => this.navbarService.secondary());
 
   constructor(
     private navbarService: NavbarService,

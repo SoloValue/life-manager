@@ -1,14 +1,19 @@
 <div
-    class="w-full bg-sky-500 flex flex-row items-center mb-5 h-18"
+    [class]="primary()"
+    class="w-full flex flex-row items-center mb-5 h-18"
 >
     <div class="basis-1/6 flex flex-row justify-center">
         <app-icon
-            class="cursor-pointer text-gray-800" size="6" image="home"
+            [class]="secondary()"
+            class="cursor-pointer" size="6" image="home"
             (click)="navigateToHome()"
         />
     </div>
     <div class="basis-4/6 flex flex-row justify-center">
-        <div class="text-4xl font-semibold tracking-wide text-gray-800">
+        <div
+           [class]="secondary()"
+            class="text-4xl font-semibold tracking-wide"
+        >
             {{title()}}
         </div>
     </div>

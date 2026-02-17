@@ -14,6 +14,9 @@ export class GroceriesPage {
   constructor(private navbarService: NavbarService) {}
 
   ngOnInit() {
-    this.navbarService.setTitle("Groceries");
+    // TODO move logic to navbar.service
+    this.navbarService.setTitle("groceries");
+    this.navbarService.setPrimary("groceries");
+    this.navbarService.setSecondary("groceries");
   }
 }

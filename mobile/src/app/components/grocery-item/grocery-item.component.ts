@@ -15,9 +15,13 @@ export class GroceryItemComponent {
 
   constructor(private groceriesService: GroceriesService) {}
 
-  onBuySwitch(event: Event) {
-    const newValue = (event.target as HTMLInputElement).checked;
-    const oldVal = this.groceryItem()!;
+  ngOnInit() {
+    console.log(this.groceryItem().name + ": " + this.groceryItem().to_buy);
+  }
+
+  onBuyClick() {
+    const oldVal = this.groceryItem();
+    const newValue: boolean = !oldVal.to_buy;
     this.groceriesService.editGroceryItem(oldVal.name, newValue);
   }
 }
