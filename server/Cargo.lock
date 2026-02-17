@@ -1551,6 +1551,7 @@ dependencies = [
  "chrono",
  "serde",
  "sqlx",
+ "thiserror",
 ]
 
 [[package]]

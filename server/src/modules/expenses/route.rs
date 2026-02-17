@@ -7,9 +7,10 @@ use serde::{Deserialize, Serialize};
 use crate::db::connection::DbConnector;
 use crate::modules::expenses::{
     db::{ExpenseCategory, NewExpenseDb},
+    error::ExpensesError,
     model::Expense,
 };
-use crate::modules::{ApiResult, ExpenseApiError, logging};
+use crate::modules::{ApiError, ApiResult, logging};
 
 #[derive(Deserialize)]
 pub struct NewExpenseRequest {
@@ -27,7 +28,9 @@ impl NewExpenseRequest {
                 description: self.description.clone(),
                 created_at: None,
             }),
-            Err(_) => Err(ExpenseApiError::BadExpenseRequest),
+            Err(e) => Err(ApiError::from(ExpensesError::BadExpenseRequest(
+                e.to_string(),
+            ))),
         }
     }
 }
@@ -45,7 +48,7 @@ pub async fn get_expenses(db_data: Data<DbConnector>) -> ApiResult<Json<Vec<Expe
         Ok(expense_vec) => Ok(Json(expense_vec)),
         Err(err) => {
             logging(&err.to_string());
-            Err(ExpenseApiError::ServerError)
+            Err(ApiError::from(ExpensesError::SqlError(err.to_string())))
         }
     }
 }
@@ -62,13 +65,13 @@ pub async fn create_expense(
             let db_res = db_conn.insert_into_table(&new_expense).await;
             if let Err(err) = db_res {
                 logging(&err.to_string());
-                return Err(ExpenseApiError::ServerError);
+                return Err(ApiError::from(ExpensesError::SqlError(err.to_string())));
             }
             return Ok(HttpResponse::Created().json(&new_expense));
         }
         Err(err) => {
             logging(&err.to_string());
-            return Err(ExpenseApiError::ExpenseUpdateFailed);
+            return Err(ApiError::from(ExpensesError::ExpenseUpdateFailed));
         }
     }
 }
@@ -85,7 +88,7 @@ pub async fn delete_expense(
         Ok(()) => Ok(HttpResponse::Ok()),
         Err(err) => {
             logging(&err.to_string());
-            return Err(ExpenseApiError::ExpenseUpdateFailed);
+            return Err(ApiError::from(ExpensesError::ExpenseUpdateFailed));
         }
     }
 }

@@ -16,7 +16,7 @@ use server::modules::date_requests::route::{
 use server::modules::expenses::route::{
     create_expense, delete_expense, get_categories, get_expenses,
 };
-use server::modules::groceries::route::{edit_grocery, get_groceries};
+use server::modules::groceries::route::{create_grocery, edit_grocery, get_groceries};
 
 #[actix_web::main]
 async fn main() -> Result<()> {
@@ -64,7 +64,8 @@ async fn main() -> Result<()> {
             .service(
                 web::scope("/groceries")
                     .service(get_groceries)
-                    .service(edit_grocery),
+                    .service(edit_grocery)
+                    .service(create_grocery),
             )
             .service(
                 web::scope("/date_requests")

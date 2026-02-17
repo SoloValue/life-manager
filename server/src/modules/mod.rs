@@ -2,25 +2,36 @@ pub mod date_requests;
 pub mod expenses;
 pub mod groceries;
 
+use date_requests::error::DateRequestError;
+use expenses::error::ExpensesError;
+use groceries::error::GroceriesError;
+
 use actix_web::{
     HttpResponse,
     error::ResponseError,
     http::{StatusCode, header::ContentType},
 };
+use thiserror::Error;
 
-#[derive(Debug)] // TODO move to expenses/route.rs
-pub enum ExpenseApiError {
-    ServerError,
-    ExpenseNotFound,
-    ExpenseUpdateFailed,
-    BadExpenseRequest,
+pub fn logging(msg: &str) {
+    println!("{msg}");
 }
-impl std::fmt::Display for ExpenseApiError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{:?}", self) // TODO do not depend on DEBUG, bad practice
-    }
+
+#[derive(Error, Debug)]
+pub enum ApiError {
+    #[error(transparent)]
+    Expenses(#[from] ExpensesError),
+
+    #[error(transparent)]
+    Groceries(#[from] GroceriesError),
+
+    #[error(transparent)]
+    DateRequest(#[from] DateRequestError),
+
+    #[error("Internal Server Error")]
+    Internal,
 }
-impl ResponseError for ExpenseApiError {
+impl ResponseError for ApiError {
     fn error_response(&self) -> HttpResponse {
         HttpResponse::build(self.status_code())
             .insert_header(ContentType::json())
@@ -28,16 +39,27 @@ impl ResponseError for ExpenseApiError {
     }
     fn status_code(&self) -> StatusCode {
         match self {
-            ExpenseApiError::ServerError => StatusCode::INTERNAL_SERVER_ERROR,
-            ExpenseApiError::ExpenseNotFound => StatusCode::NOT_FOUND,
-            ExpenseApiError::ExpenseUpdateFailed => StatusCode::FAILED_DEPENDENCY,
-            ExpenseApiError::BadExpenseRequest => StatusCode::BAD_REQUEST,
+            ApiError::Expenses(e) => match e {
+                ExpensesError::SqlError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+                ExpensesError::ExpenseNotFound => StatusCode::NOT_FOUND,
+                ExpensesError::ExpenseUpdateFailed => StatusCode::INTERNAL_SERVER_ERROR,
+                ExpensesError::BadExpenseRequest(_) => StatusCode::BAD_REQUEST,
+            },
+            ApiError::Groceries(e) => match e {
+                GroceriesError::SqlError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+                GroceriesError::GroceryNotFound => StatusCode::NOT_FOUND,
+                GroceriesError::GroceryUpdateFailed => StatusCode::INTERNAL_SERVER_ERROR,
+                GroceriesError::BadGroceryRequest(_) => StatusCode::BAD_REQUEST,
+            },
+            ApiError::DateRequest(e) => match e {
+                DateRequestError::SqlError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+                DateRequestError::DateRequestNotFound => StatusCode::NOT_FOUND,
+                DateRequestError::DateRequestUpdateFailed => StatusCode::INTERNAL_SERVER_ERROR,
+                DateRequestError::BadDateRequestRequest(_) => StatusCode::BAD_REQUEST,
+            },
+            ApiError::Internal => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 }
 
-pub fn logging(msg: &str) {
-    println!("{msg}");
-}
-
-pub type ApiResult<T> = std::result::Result<T, ExpenseApiError>;
+pub type ApiResult<T> = std::result::Result<T, ApiError>;

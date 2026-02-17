@@ -6,8 +6,10 @@ use chrono::{DateTime, Local};
 use serde::Deserialize;
 
 use crate::db::connection::DbConnector;
-use crate::modules::date_requests::{db::NewDateRequestDb, model::DateRequest};
-use crate::modules::{ApiResult, ExpenseApiError, logging};
+use crate::modules::date_requests::{
+    db::NewDateRequestDb, error::DateRequestError, model::DateRequest,
+};
+use crate::modules::{ApiError, ApiResult, logging};
 
 #[derive(Deserialize)]
 pub struct NewDateRequestRequest {
@@ -37,7 +39,7 @@ pub async fn get_date_requests(db_data: Data<DbConnector>) -> ApiResult<Json<Vec
         Ok(some) => Ok(Json(some)),
         Err(err) => {
             logging(&err.to_string());
-            Err(ExpenseApiError::ServerError)
+            Err(ApiError::from(DateRequestError::SqlError(err.to_string())))
         }
     }
 }
@@ -54,14 +56,14 @@ pub async fn create_date_request(
             let db_result = db_conn.insert_into_table(&item).await;
             if let Err(err) = db_result {
                 logging(&err.to_string());
-                return Err(ExpenseApiError::ServerError);
+                return Err(ApiError::from(DateRequestError::SqlError(err.to_string())));
             } else {
                 return Ok(HttpResponse::Created().json(&item));
             }
         }
         Err(err) => {
             logging(&err.to_string());
-            return Err(ExpenseApiError::ExpenseUpdateFailed);
+            return Err(ApiError::from(DateRequestError::DateRequestUpdateFailed));
         }
     }
 }
@@ -78,7 +80,7 @@ pub async fn delete_date_request(
         Ok(()) => Ok(HttpResponse::Ok()),
         Err(err) => {
             logging(&err.to_string());
-            return Err(ExpenseApiError::ExpenseUpdateFailed);
+            return Err(ApiError::from(DateRequestError::DateRequestUpdateFailed));
         }
     }
 }

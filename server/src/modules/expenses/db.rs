@@ -1,7 +1,8 @@
 use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
-use sqlx::{self, FromRow, QueryBuilder, prelude::Type};
+use sqlx::{self, FromRow, PgPool, QueryBuilder, prelude::Type};
 
+use crate::Result;
 use crate::db::connection::ToRow;
 
 #[derive(Debug, Type, Clone, Serialize, Deserialize)]
@@ -60,17 +61,20 @@ pub struct ExpenseDb {
     pub description: String,
     pub created_at: DateTime<Local>,
 }
-// impl FromRow<'_, PgRow> for ExpenseDb {
-//     fn from_row(row: &PgRow) -> sqlx::Result<Self> {
-//         Ok(Self {
-//             id: row.try_get("id")?,
-//             category: row.try_get("category")?,
-//             value: row.try_get("value")?,
-//             description: row.try_get("description")?,
-//             created_at: row.try_get("created_at")?,
-//         })
-//     }
-// }
+impl ExpenseDb {
+    pub async fn delete_from_db(id: i32, pool: &PgPool) -> Result<()> {
+        let mut qb = QueryBuilder::new(format!(
+            "DELETE FROM {} WHERE id = ",
+            NewExpenseDb::table_name()
+        ));
+        qb.push_bind(id);
+
+        println!("{}", &qb.sql());
+        qb.build().execute(pool).await?;
+
+        Ok(())
+    }
+}
 
 #[derive(Serialize)]
 pub struct NewExpenseDb {
