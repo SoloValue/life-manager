@@ -50,4 +50,14 @@ export class GroceriesService {
       }
     });
   }
+
+  public deleteGroceryItem(name: string) {
+    this.httpService.deleteGroceryItem(name).subscribe((resp) => {
+      if (resp.ok) {
+        this.groceryList.update((list) =>
+          list!.filter((val) => val.name != name),
+        );
+      }
+    });
+  }
 }

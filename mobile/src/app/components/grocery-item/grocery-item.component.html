@@ -1,20 +1,22 @@
-<div class="flex flex-row relative">
-    <!-- <div class="slider text-red-500 absolute left-[-2rem] top-0">
-        SL
-    </div> -->
-    <div class="basis-1/4 flex justify-center">
-        <button
-            [ngClass]="{'bg-green-500': groceryItem().to_buy, 'bg-red-500': !groceryItem().to_buy}"
-            (click)="onBuyClick()"
-        >
-            {{(groceryItem().to_buy ? 'A' : 'B')}}
-        </button>
-    </div>
-    <label
-        [for]="groceryItem().name + '-checkbox'"
-        class="basis-3/4"
-        [ngClass]="{'text-(--text-color)': groceryItem().to_buy, 'text-(--text-secondary-color)': !groceryItem().to_buy}"
+<div class="flex flex-row items-center justify-between gap-x-2">
+    <button
+        (click)="onBuyClick()"
+        class="cursor-pointer rounded-full border-solid border-1 py-2 px-3"
+        [ngClass]="{
+            'bg-(--groceries-color) border-(--text-color) drop-shadow-[0.25rem_0.2rem_0_rgba(0,0,0,0.3)]': groceryItem().to_buy,
+            'bg-gray-700/20 text-(--text-secondary-color) border-(--text-secondary-color)': !groceryItem().to_buy
+        }"
     >
-        {{ groceryItem().name }}
-    </label>
+        {{groceryItem().name}}
+    </button>
+    <!-- <app-icon
+        class="text-(--text-secondary-color) cursor-pointer pb-[0.1rem]" size="6" image="trash"
+        (click)="onDeleteClick()"
+    /> -->
+    <app-complex-icon
+        class="cursor-pointer pb-[0.1rem]"
+        size="9"
+        [icon]="getIconType()"
+        (click)="onDeleteClick()"
+    />
 </div>

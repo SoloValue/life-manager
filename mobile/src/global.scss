@@ -10,3 +10,11 @@
  */
 @use "tailwindcss";
 @source inline("size-{1..50..1}");
+@theme {
+  --animate-slide-in: slide-in 0.25s ease-out;
+
+  @keyframes slide-in {
+    0%   { opacity: 0; transform: translateX(100%); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+}

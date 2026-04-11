@@ -89,6 +89,13 @@ export class HttpService {
     );
   }
 
+  public deleteGroceryItem(name: string) {
+    return this.httpClient.delete(`${this.HTTP_ADDRESS}/groceries/${name}`, {
+      observe: "response",
+      responseType: "json",
+    });
+  }
+
   ////////////////////////
   ///// DATE REQUEST /////
   ////////////////////////
