@@ -1,2 +1,7 @@
+# ENV
+.env
+.zed
+
+# MY STUFF
 test.http
 *.tar.gz

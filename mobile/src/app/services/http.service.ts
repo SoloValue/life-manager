@@ -1,7 +1,7 @@
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { catchError, Observable, of } from "rxjs";
 import { NewExpense } from "../models/expenses";
+import { ConfigService } from "./config.service";
 
 export interface ErrorResponse {
   status_code: number;
@@ -12,16 +12,21 @@ export interface ErrorResponse {
   providedIn: "root",
 })
 export class HttpService {
-  private HTTP_ADDRESS = "http://127.0.0.1:8000";
+  private httpAddress: string;
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(
+    private httpClient: HttpClient,
+    private configService: ConfigService
+  ) {
+    this.httpAddress = this.configService.getApiBaseUrl();
+  }
 
   ////////////////////////
   /////   EXPENSES   /////
   ////////////////////////
 
   public getExpenses() {
-    return this.httpClient.get(`${this.HTTP_ADDRESS}/expenses`, {
+    return this.httpClient.get(`${this.httpAddress}/expenses`, {
       observe: "response",
       responseType: "json",
     });
@@ -29,21 +34,21 @@ export class HttpService {
   }
 
   public newExpense(new_expense: NewExpense) {
-    return this.httpClient.post(`${this.HTTP_ADDRESS}/expenses`, new_expense, {
+    return this.httpClient.post(`${this.httpAddress}/expenses`, new_expense, {
       observe: "response",
       responseType: "json",
     });
   }
 
   public deleteExpense(id: number) {
-    return this.httpClient.delete(`${this.HTTP_ADDRESS}/expenses/${id}`, {
+    return this.httpClient.delete(`${this.httpAddress}/expenses/${id}`, {
       observe: "response",
       responseType: "json",
     });
   }
 
   public getExpensesCategories() {
-    return this.httpClient.get(`${this.HTTP_ADDRESS}/expenses/categories`, {
+    return this.httpClient.get(`${this.httpAddress}/expenses/categories`, {
       observe: "response",
       responseType: "json",
     });
@@ -55,7 +60,7 @@ export class HttpService {
   ///////////////////////
 
   public getGroceries() {
-    return this.httpClient.get(`${this.HTTP_ADDRESS}/groceries`, {
+    return this.httpClient.get(`${this.httpAddress}/groceries`, {
       observe: "response",
       responseType: "json",
     });
@@ -63,7 +68,7 @@ export class HttpService {
 
   public editGroceryItem(name: string, new_val: boolean) {
     return this.httpClient.patch(
-      `${this.HTTP_ADDRESS}/groceries`,
+      `${this.httpAddress}/groceries`,
       {
         name: name,
         new_value: new_val,
@@ -77,7 +82,7 @@ export class HttpService {
 
   public createGroceryItem(name: string, to_buy?: boolean) {
     return this.httpClient.post(
-      `${this.HTTP_ADDRESS}/groceries`,
+      `${this.httpAddress}/groceries`,
       {
         name: name,
         to_buy: to_buy,
@@ -90,7 +95,7 @@ export class HttpService {
   }
 
   public deleteGroceryItem(name: string) {
-    return this.httpClient.delete(`${this.HTTP_ADDRESS}/groceries/${name}`, {
+    return this.httpClient.delete(`${this.httpAddress}/groceries/${name}`, {
       observe: "response",
       responseType: "json",
     });
@@ -101,14 +106,14 @@ export class HttpService {
   ////////////////////////
 
   public getDateRequests() {
-    return this.httpClient.get(`${this.HTTP_ADDRESS}/date_requests`, {
+    return this.httpClient.get(`${this.httpAddress}/date_requests`, {
       observe: "response",
       responseType: "json",
     });
   }
 
   public deleteDateRequest(id: number) {
-    return this.httpClient.delete(`${this.HTTP_ADDRESS}/date_requests/${id}`, {
+    return this.httpClient.delete(`${this.httpAddress}/date_requests/${id}`, {
       observe: "response",
       responseType: "json",
     });

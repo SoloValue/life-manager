@@ -1,0 +1,10 @@
+api:
+  baseUrl: "http://127.0.0.1:8000"
+  timeout: 30000
+
+app:
+  name: "Life Manager"
+  version: "0.1.0"
+
+dateRequests:
+  defaultDurationMinutes: 60
