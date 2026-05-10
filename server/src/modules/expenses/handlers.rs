@@ -1,46 +1,16 @@
 use actix_web::{
-    HttpResponse, Responder, delete, get, post,
+    HttpResponse, Responder,
     web::{Data, Json, Path},
 };
-use serde::{Deserialize, Serialize};
 
-use crate::db::connection::DbConnector;
 use crate::modules::expenses::{
     db::{ExpenseCategory, NewExpenseDb},
     error::ExpensesError,
     model::Expense,
 };
 use crate::modules::{ApiError, ApiResult, logging};
+use crate::{core::db::connection::DbConnector, modules::expenses::model::NewExpenseRequest};
 
-#[derive(Deserialize)]
-pub struct NewExpenseRequest {
-    pub category: String,
-    pub value: f32,
-    pub description: String,
-}
-impl NewExpenseRequest {
-    pub fn to_new_db_model(&self) -> ApiResult<NewExpenseDb> {
-        let p_result = ExpenseCategory::try_from(self.category.as_str());
-        match p_result {
-            Ok(cat) => Ok(NewExpenseDb {
-                category: cat,
-                value: self.value,
-                description: self.description.clone(),
-                created_at: None,
-            }),
-            Err(e) => Err(ApiError::from(ExpensesError::BadExpenseRequest(
-                e.to_string(),
-            ))),
-        }
-    }
-}
-
-#[derive(Serialize)]
-pub struct ResponseBody {
-    id: String,
-}
-
-#[get("")]
 pub async fn get_expenses(db_data: Data<DbConnector>) -> ApiResult<Json<Vec<Expense>>> {
     logging("GET /expenses");
     let expense_vec = Expense::fetch_from_db(&db_data).await;
@@ -53,7 +23,6 @@ pub async fn get_expenses(db_data: Data<DbConnector>) -> ApiResult<Json<Vec<Expe
     }
 }
 
-#[post("")]
 pub async fn create_expense(
     new_expense: Json<NewExpenseRequest>,
     db_conn: Data<DbConnector>,
@@ -76,7 +45,6 @@ pub async fn create_expense(
     }
 }
 
-#[delete("/{id_expense}")]
 pub async fn delete_expense(
     db_data: Data<DbConnector>,
     id_identifier: Path<u32>,
@@ -93,7 +61,6 @@ pub async fn delete_expense(
     }
 }
 
-#[get("/categories")]
 pub async fn get_categories() -> ApiResult<Json<Vec<&'static str>>> {
     logging("GET /expenses/categories");
     let exp_vector = ExpenseCategory::get_all();

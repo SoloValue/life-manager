@@ -3,7 +3,7 @@ use serde::Serialize;
 use sqlx::{self, FromRow, PgPool, QueryBuilder};
 
 use crate::Result;
-use crate::db::connection::ToRow;
+use crate::core::db::connection::ToRow;
 
 #[derive(Debug, FromRow)]
 pub struct GroceryItemDb {

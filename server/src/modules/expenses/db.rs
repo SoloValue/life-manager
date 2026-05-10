@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::{self, FromRow, PgPool, QueryBuilder, prelude::Type};
 
 use crate::Result;
-use crate::db::connection::ToRow;
+use crate::core::db::connection::ToRow;
 
 #[derive(Debug, Type, Clone, Serialize, Deserialize)]
 #[sqlx(type_name = "expenses_type")] // match to pg type

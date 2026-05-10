@@ -1,9 +1,10 @@
-use crate::Result;
-use crate::db::connection::DbConnector;
-use crate::modules::date_requests::db::DateRequestDb;
-
 use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
+
+use crate::Result;
+use crate::core::db::connection::DbConnector;
+use crate::modules::ApiResult;
+use crate::modules::date_requests::db::{DateRequestDb, NewDateRequestDb};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct DateRequest {
@@ -34,5 +35,24 @@ impl DateRequest {
             .map(|val| DateRequest::from_db_model(val))
             .collect();
         Ok(result)
+    }
+}
+
+#[derive(Deserialize)]
+pub struct NewDateRequestRequest {
+    pub description: String,
+    pub planned_date: DateTime<Local>,
+    pub duration_minutes: Option<i32>,
+    pub created_by: String, // TODO use log information
+}
+impl NewDateRequestRequest {
+    pub fn to_new_db_model(&self) -> ApiResult<NewDateRequestDb> {
+        Ok(NewDateRequestDb {
+            description: self.description.clone(),
+            planned_date: self.planned_date,
+            duration_minutes: self.duration_minutes,
+            created_by: self.created_by.clone(),
+            created_at: None,
+        })
     }
 }

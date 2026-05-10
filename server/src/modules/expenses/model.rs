@@ -1,9 +1,11 @@
-use crate::Result;
-use crate::db::connection::DbConnector;
-use crate::modules::expenses::db::{ExpenseCategory, ExpenseDb};
-
 use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
+
+use crate::Result;
+use crate::core::db::connection::DbConnector;
+use crate::modules::expenses::db::{ExpenseCategory, ExpenseDb, NewExpenseDb};
+use crate::modules::expenses::error::ExpensesError;
+use crate::modules::{ApiError, ApiResult};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Expense {
@@ -36,5 +38,28 @@ impl Expense {
             .collect();
 
         Ok(result)
+    }
+}
+
+#[derive(Deserialize)]
+pub struct NewExpenseRequest {
+    pub category: String,
+    pub value: f32,
+    pub description: String,
+}
+impl NewExpenseRequest {
+    pub fn to_new_db_model(&self) -> ApiResult<NewExpenseDb> {
+        let p_result = ExpenseCategory::try_from(self.category.as_str());
+        match p_result {
+            Ok(cat) => Ok(NewExpenseDb {
+                category: cat,
+                value: self.value,
+                description: self.description.clone(),
+                created_at: None,
+            }),
+            Err(e) => Err(ApiError::from(ExpensesError::BadExpenseRequest(
+                e.to_string(),
+            ))),
+        }
     }
 }

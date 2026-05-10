@@ -1,9 +1,11 @@
-use crate::db::connection::{DbConnector, ToRow};
-use crate::modules::groceries::db::NewGroceryItemDb;
-use crate::{Result, modules::groceries::db::GroceryItemDb};
-
 use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
+
+use crate::core::db::connection::{DbConnector, EditRow, ToRow};
+use crate::modules::groceries::db::NewGroceryItemDb;
+use crate::modules::groceries::error::GroceriesError;
+use crate::modules::{ApiError, ApiResult};
+use crate::{Result, modules::groceries::db::GroceryItemDb};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct GroceryItem {
@@ -33,5 +35,53 @@ impl GroceryItem {
             .collect();
 
         Ok(result)
+    }
+}
+
+#[derive(Deserialize)]
+pub struct EditGroceryItemRequest {
+    pub name: String,
+    pub new_value: bool,
+}
+impl EditRow for EditGroceryItemRequest {
+    // TODO move this into GroceryItem
+    fn table_name() -> &'static str {
+        "groceries"
+    }
+
+    fn bind_edit_values<'a>(&'a self, qb: &mut sqlx::QueryBuilder<'a, sqlx::Postgres>) {
+        // TODO find a better way to do this
+        qb.push(format!(
+            "UPDATE {} SET to_buy = {} WHERE name = '{}'",
+            EditGroceryItemRequest::table_name(),
+            self.new_value,
+            self.name,
+        ));
+    }
+}
+
+#[derive(Deserialize)]
+pub struct NewGroceryItemRequest {
+    pub name: String,
+    pub to_buy: Option<bool>,
+}
+impl NewGroceryItemRequest {
+    pub fn to_new_db_model(&self) -> ApiResult<NewGroceryItemDb> {
+        if self.name.chars().count() > 30 {
+            return Err(ApiError::from(GroceriesError::BadGroceryRequest(
+                "Expecting max 30 characters for field 'name'".to_string(),
+            )));
+        }
+
+        let to_buy = match &self.to_buy {
+            Some(value) => *value,
+            None => true,
+        };
+
+        Ok(NewGroceryItemDb {
+            name: self.name.clone(),
+            to_buy: to_buy,
+            created_at: None,
+        })
     }
 }

@@ -1,22 +1,8 @@
 use actix_cors::Cors;
-use actix_web::{
-    App, HttpServer, http,
-    middleware::Logger,
-    web::{self, Data},
-};
+use actix_web::{App, HttpServer, http, middleware::Logger, web::Data};
 
-use server::db::{
-    connection::DbConnector,
-    // models::{ExpenseCategory, NewExpenseDb},
-};
-use server::modules::date_requests::route::{
-    create_date_request, delete_date_request, get_date_requests,
-};
-use server::modules::expenses::route::{
-    create_expense, delete_expense, get_categories, get_expenses,
-};
-use server::modules::groceries::route::{create_grocery, edit_grocery, get_groceries};
-use server::{Result, modules::groceries::route::delete_grocery};
+use server::Result;
+use server::{core::db::connection::DbConnector, modules};
 
 #[actix_web::main]
 async fn main() -> Result<()> {
@@ -54,26 +40,8 @@ async fn main() -> Result<()> {
             }))
             .wrap(logger)
             .wrap(cors)
-            .service(
-                web::scope("/expenses")
-                    .service(get_expenses)
-                    .service(create_expense)
-                    .service(delete_expense)
-                    .service(get_categories),
-            )
-            .service(
-                web::scope("/groceries")
-                    .service(get_groceries)
-                    .service(edit_grocery)
-                    .service(create_grocery)
-                    .service(delete_grocery),
-            )
-            .service(
-                web::scope("/date_requests")
-                    .service(get_date_requests)
-                    .service(create_date_request)
-                    .service(delete_date_request),
-            )
+            .configure(modules::groceries::routes)
+            .configure(modules::expenses::routes)
     })
     .bind(("127.0.0.1", port))?
     .run()

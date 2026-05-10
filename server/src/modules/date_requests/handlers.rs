@@ -1,36 +1,16 @@
 use actix_web::{
-    HttpResponse, Responder, delete, get, post,
+    HttpResponse, Responder,
     web::{Data, Json, Path},
 };
-use chrono::{DateTime, Local};
-use serde::Deserialize;
 
-use crate::db::connection::DbConnector;
 use crate::modules::date_requests::{
     db::NewDateRequestDb, error::DateRequestError, model::DateRequest,
 };
 use crate::modules::{ApiError, ApiResult, logging};
+use crate::{
+    core::db::connection::DbConnector, modules::date_requests::model::NewDateRequestRequest,
+};
 
-#[derive(Deserialize)]
-pub struct NewDateRequestRequest {
-    pub description: String,
-    pub planned_date: DateTime<Local>,
-    pub duration_minutes: Option<i32>,
-    pub created_by: String, // TODO use log information
-}
-impl NewDateRequestRequest {
-    pub fn to_new_db_model(&self) -> ApiResult<NewDateRequestDb> {
-        Ok(NewDateRequestDb {
-            description: self.description.clone(),
-            planned_date: self.planned_date,
-            duration_minutes: self.duration_minutes,
-            created_by: self.created_by.clone(),
-            created_at: None,
-        })
-    }
-}
-
-#[get("")]
 pub async fn get_date_requests(db_data: Data<DbConnector>) -> ApiResult<Json<Vec<DateRequest>>> {
     logging("GET /date_request");
     let date_request_vector = DateRequest::fetch_from_db(&db_data).await;
@@ -44,7 +24,6 @@ pub async fn get_date_requests(db_data: Data<DbConnector>) -> ApiResult<Json<Vec
     }
 }
 
-#[post("")]
 pub async fn create_date_request(
     new_expense: Json<NewDateRequestRequest>,
     db_conn: Data<DbConnector>,
@@ -68,7 +47,6 @@ pub async fn create_date_request(
     }
 }
 
-#[delete("/{id_date_request}")]
 pub async fn delete_date_request(
     db_data: Data<DbConnector>,
     id_identifier: Path<u32>,

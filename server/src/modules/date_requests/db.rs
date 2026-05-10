@@ -2,7 +2,7 @@ use chrono::{DateTime, Local};
 use serde::Serialize;
 use sqlx::{QueryBuilder, prelude::FromRow};
 
-use crate::db::connection::ToRow;
+use crate::core::db::connection::ToRow;
 
 #[derive(Debug, FromRow)]
 pub struct DateRequestDb {

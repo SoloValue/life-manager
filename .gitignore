@@ -1,6 +1,7 @@
 # ENV
 .env
 .zed
+PLAN.md
 
 # MY STUFF
 test.http

@@ -1,65 +1,15 @@
 use actix_web::{
-    HttpResponse, Responder, delete, get, patch, post,
+    HttpResponse, Responder,
     web::{Data, Json, Path},
 };
-use serde::Deserialize;
 
-use crate::modules::groceries::{db::NewGroceryItemDb, error::GroceriesError, model::GroceryItem};
-use crate::modules::{ApiError, ApiResult, logging};
-use crate::{
-    db::connection::{DbConnector, EditRow},
-    modules::groceries::db::GroceryItemDb,
+use crate::modules::groceries::{
+    error::GroceriesError,
+    model::{EditGroceryItemRequest, GroceryItem, NewGroceryItemRequest},
 };
+use crate::modules::{ApiError, ApiResult, logging};
+use crate::{core::db::connection::DbConnector, modules::groceries::db::GroceryItemDb};
 
-#[derive(Deserialize)]
-pub struct EditGroceryItemRequest {
-    pub name: String,
-    pub new_value: bool,
-}
-impl EditRow for EditGroceryItemRequest {
-    // TODO move this into GroceryItem
-    fn table_name() -> &'static str {
-        "groceries"
-    }
-
-    fn bind_edit_values<'a>(&'a self, qb: &mut sqlx::QueryBuilder<'a, sqlx::Postgres>) {
-        // TODO find a better way to do this
-        qb.push(format!(
-            "UPDATE {} SET to_buy = {} WHERE name = '{}'",
-            EditGroceryItemRequest::table_name(),
-            self.new_value,
-            self.name,
-        ));
-    }
-}
-
-#[derive(Deserialize)]
-pub struct NewGroceryItemRequest {
-    pub name: String,
-    pub to_buy: Option<bool>,
-}
-impl NewGroceryItemRequest {
-    pub fn to_new_db_model(&self) -> ApiResult<NewGroceryItemDb> {
-        if self.name.chars().count() > 30 {
-            return Err(ApiError::from(GroceriesError::BadGroceryRequest(
-                "Expecting max 30 characters for field 'name'".to_string(),
-            )));
-        }
-
-        let to_buy = match &self.to_buy {
-            Some(value) => *value,
-            None => true,
-        };
-
-        Ok(NewGroceryItemDb {
-            name: self.name.clone(),
-            to_buy: to_buy,
-            created_at: None,
-        })
-    }
-}
-
-#[get("")]
 pub async fn get_groceries(db_data: Data<DbConnector>) -> ApiResult<Json<Vec<GroceryItem>>> {
     logging("GET /groceries");
     let groceries_vec = GroceryItem::fetch_from_db(&db_data).await;
@@ -72,7 +22,6 @@ pub async fn get_groceries(db_data: Data<DbConnector>) -> ApiResult<Json<Vec<Gro
     }
 }
 
-#[patch("")]
 pub async fn edit_grocery(
     to_edit: Json<EditGroceryItemRequest>,
     db_conn: Data<DbConnector>,
@@ -91,7 +40,6 @@ pub async fn edit_grocery(
     }
 }
 
-#[post("")]
 pub async fn create_grocery(
     new_grocery_item: Json<NewGroceryItemRequest>,
     db_conn: Data<DbConnector>,
@@ -111,7 +59,6 @@ pub async fn create_grocery(
     }
 }
 
-#[delete("/{grocery_item_name}")]
 pub async fn delete_grocery(
     grocery_item_name: Path<String>,
     db_conn: Data<DbConnector>,
