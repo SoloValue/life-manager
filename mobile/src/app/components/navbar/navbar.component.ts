@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed } from "@angular/core";
 import { Router } from "@angular/router";
 import { NavbarService } from "src/app/services/navbar.service";
+
 import { IconComponent } from "../icon/icon.component";
 
 @Component({
@@ -23,5 +24,9 @@ export class NavbarComponent {
   navigateToHome() {
     this.router.navigate(["/home"]);
     this.navbarService.setTitle("HOME");
+  }
+
+  toogleSidebar() {
+      console.log("Not impolemented yet!");
   }
 }

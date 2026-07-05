@@ -4,6 +4,7 @@ export const classColorSelection = {
   home: "bg-(--home-color)",
   groceries: "bg-(--groceries-color)",
   expenses: "bg-(--expenses-color)",
+  settings: "bg-(--settings-color)",
 
   // generics
   red: "bg-red-500",
@@ -34,4 +35,5 @@ export const classSecondaryColorSelection = {
   home: "text-(--home-secondary-color)",
   groceries: "text-(--groceries-secondary-color)",
   expenses: "text-(--expenses-secondary-color)",
+  settings: "text-(--settings-secondary-color)",
 };

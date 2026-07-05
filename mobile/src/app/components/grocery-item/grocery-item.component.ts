@@ -2,7 +2,6 @@ import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { GroceriesService } from "src/app/services/groceries.service";
 import { GroceryItem } from "src/models/api.interface";
-import { IconComponent } from "../icon/icon.component";
 import { ComplexIconComponent } from "../complex-icon/complex-icon.component";
 import { ToastService } from "src/app/services/toast.service";
 

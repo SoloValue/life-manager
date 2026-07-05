@@ -2,7 +2,7 @@
     "name": "2gether",
     "version": "0.0.1",
     "author": "MM",
-    "homepage": "https://ionicframework.com/",
+    "description": "A project to make living togheter easier",
     "scripts": {
         "ng": "ng",
         "start": "ENVIRONMENT=production ng serve",
@@ -63,6 +63,5 @@
         "karma-jasmine": "~5.1.0",
         "karma-jasmine-html-reporter": "~2.1.0",
         "typescript": "^5.9.2"
-    },
-    "description": "An Ionic project"
+    }
 }

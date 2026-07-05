@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { GroceryListComponent } from "src/app/components/grocery-list/grocery-list.component";
-import { GroceriesService } from "src/app/services/groceries.service";
 import { NavbarService } from "src/app/services/navbar.service";
 
 @Component({

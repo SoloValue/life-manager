@@ -1,13 +1,16 @@
 :root {
-    --backgroud-color: #30333d;
+  --backgroud-color: #30333d;
 
-    --text-color: #ffeae5;
-    --text-secondary-color: #787876;
+  --text-color: #ffeae5;
+  --text-secondary-color: #787876;
 
-    --home-color: #30333d;
-    --home-secondary-color: #ffeae5;
-    --groceries-color: #9b3131;
-    --groceries-secondary-color: #ffeae5;
-    --expenses-color: #504bef;
-    --expenses-secondary-color: #ffeae5;
+  --home-color: #30333d;
+  --home-secondary-color: #ffeae5;
+  --groceries-color: #9b3131;
+  --groceries-secondary-color: #ffeae5;
+  --expenses-color: #504bef;
+  --expenses-secondary-color: #ffeae5;
+
+  --settings-color: #616161;
+  --settings-secondary-color: #ffeae5;
 }

@@ -1,21 +1,31 @@
 <div class="flex flex-row flex-wrap gap-y-4">
-    <div class="basis-1/3 flex justify-center">
-        <app-task-button
-            size="15"
-            color="expenses"
-            (onClick)="goToTaks('expenses')"
-        >
-            <app-icon icon class="text-(--text-color)" image="expense" />
-        </app-task-button>
-    </div>
+  <div class="basis-1/3 flex justify-center">
+    <app-task-button
+      size="15"
+      color="expenses"
+      (onClick)="goToTaks('expenses')"
+    >
+      <app-icon icon class="text-(--text-color)" image="expense" />
+    </app-task-button>
+  </div>
 
-    <div class="basis-1/3 flex justify-center">
-        <app-task-button
-            size="15"
-            color="groceries"
-            (onClick)="goToTaks('groceries')"
-        >
-            <app-icon icon class="text-(--text-color)" image="groceries" />
-        </app-task-button>
-    </div>
+  <div class="basis-1/3 flex justify-center">
+    <app-task-button
+      size="15"
+      color="groceries"
+      (onClick)="goToTaks('groceries')"
+    >
+      <app-icon icon class="text-(--text-color)" image="groceries" />
+    </app-task-button>
+  </div>
+
+  <div class="basis-1/3 flex justify-center">
+    <app-task-button
+      size="15"
+      color="settings"
+      (onClick)="goToTaks('settings')"
+    >
+      <app-icon icon class="text-(--text-color)" image="settings" />
+    </app-task-button>
+  </div>
 </div>

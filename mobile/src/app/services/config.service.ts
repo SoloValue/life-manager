@@ -1,7 +1,9 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import yaml from 'js-yaml';
+import pkg from '../../../package.json';
 
 export interface ApiConfig {
   baseUrl: string;
@@ -34,19 +36,54 @@ export class ConfigService {
   constructor(private http: HttpClient) {}
 
   public loadConfig(): Observable<Config> {
-    return new Observable<Config>((observer) => {
-      this.http
-        .get('assets/config/config.yaml', { responseType: 'text' })
-        .subscribe({
-          next: (yamlText) => {
-            const config = yaml.load(yamlText as string) as Config;
-            this.configSignal.set(config);
-            observer.next(config);
-            observer.complete();
-          },
-          error: (err) => observer.error(err),
-        });
+    return this.http
+      .get('assets/config/config.yaml', { responseType: 'text' })
+      .pipe(
+        map((yamlText) => {
+          const config = yaml.load(yamlText) as Omit<Config, 'app'>;
+          const fullConfig: Config = {
+            ...config,
+            app: {
+              name: pkg.name,
+              version: pkg.version,
+            },
+          };
+          const saved = localStorage.getItem('appConfig');
+          if (saved) {
+            const parsed = JSON.parse(saved) as Partial<Config>;
+            if (parsed.api) fullConfig.api = { ...fullConfig.api, ...parsed.api };
+            if (parsed.dateRequests) fullConfig.dateRequests = { ...fullConfig.dateRequests, ...parsed.dateRequests };
+          }
+          this.configSignal.set(fullConfig);
+          return fullConfig;
+        }),
+      );
+  }
+
+  public updateApiConfig(baseUrl: string, timeout: number): void {
+    this.configSignal.update((cfg) => {
+      if (!cfg) return cfg;
+      return { ...cfg, api: { ...cfg.api, baseUrl, timeout } };
     });
+    this.persistConfig();
+  }
+
+  public updateDateRequestsConfig(defaultDurationMinutes: number): void {
+    this.configSignal.update((cfg) => {
+      if (!cfg) return cfg;
+      return { ...cfg, dateRequests: { ...cfg.dateRequests, defaultDurationMinutes } };
+    });
+    this.persistConfig();
+  }
+
+  private persistConfig(): void {
+    const cfg = this.configSignal();
+    if (cfg) {
+      localStorage.setItem(
+        'appConfig',
+        JSON.stringify({ api: cfg.api, dateRequests: cfg.dateRequests }),
+      );
+    }
   }
 
   public getApiBaseUrl(): string {
@@ -58,7 +95,7 @@ export class ConfigService {
   }
 
   public getAppName(): string {
-    return this.configSignal()?.app.name ?? 'Life Manager';
+    return this.configSignal()?.app.name ?? '2gether';
   }
 
   public getDefaultDurationMinutes(): number {

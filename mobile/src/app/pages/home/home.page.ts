@@ -29,4 +29,4 @@ export class HomePage {
   }
 }
 
-type TaskType = "expenses" | "groceries";
+type TaskType = "expenses" | "groceries" | "settings";

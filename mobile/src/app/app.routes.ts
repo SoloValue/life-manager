@@ -2,6 +2,7 @@ import { Routes } from "@angular/router";
 import { HomePage } from "./pages/home/home.page";
 import { ExpensesPage } from "./pages/expenses/expenses.page";
 import { GroceriesPage } from "./pages/groceries/groceries.page";
+import { SettingsComponent } from "./pages/settings/settings.page";
 
 export const routes: Routes = [
   {
@@ -16,11 +17,10 @@ export const routes: Routes = [
     path: "groceries",
     component: GroceriesPage,
   },
-  // {
-  //   path: "/home",
-  //   loadChildren: () =>
-  //     import("./pages/home/home.page").then((m) => m.HomePage),
-  // },
+  {
+    path: "settings",
+    component: SettingsComponent,
+  },
   {
     path: "",
     redirectTo: "/home",
