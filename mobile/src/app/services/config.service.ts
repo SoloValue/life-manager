@@ -62,10 +62,18 @@ export class ConfigService {
       .pipe(map((yamlText) => yaml.load(yamlText) as Omit<Config, 'app'>)));
   }
 
-  public updateApiConfig(baseUrl: string, timeout: number): void {
+  public updateApiAddress(baseUrl: string): void {
     this.configSignal.update((cfg) => {
       if (!cfg) return cfg;
-      return { ...cfg, api: { ...cfg.api, baseUrl, timeout } };
+      return { ...cfg, api: { ...cfg.api, baseUrl } };
+    });
+    this.persistConfig();
+  }
+
+  public updateApiTimeout(timeout: number): void {
+    this.configSignal.update((cfg) => {
+      if (!cfg) return cfg;
+      return { ...cfg, api: { ...cfg.api, timeout } };
     });
     this.persistConfig();
   }
@@ -120,6 +128,31 @@ export class ConfigService {
 
   public getApiBaseUrl(): string {
     return this.configSignal()?.api.baseUrl ?? 'http://127.0.0.1:8000';
+  }
+
+  public getApiScheme(): string {
+    return this.parseBaseUrl(this.getApiBaseUrl()).scheme;
+  }
+
+  public getApiHost(): string {
+    return this.parseBaseUrl(this.getApiBaseUrl()).host;
+  }
+
+  public getApiPort(): string {
+    return this.parseBaseUrl(this.getApiBaseUrl()).port;
+  }
+
+  private parseBaseUrl(baseUrl: string): { scheme: string; host: string; port: string } {
+    try {
+      const url = new URL(baseUrl);
+      return {
+        scheme: url.protocol.replace(':', ''),
+        host: url.hostname,
+        port: url.port,
+      };
+    } catch {
+      return { scheme: 'http', host: baseUrl, port: '' };
+    }
   }
 
   public getApiTimeout(): number {

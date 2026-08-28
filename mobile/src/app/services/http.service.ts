@@ -12,14 +12,14 @@ export interface ErrorResponse {
   providedIn: "root",
 })
 export class HttpService {
-  private httpAddress: string;
+  private get httpAddress(): string {
+    return this.configService.getApiBaseUrl();
+  }
 
   constructor(
     private httpClient: HttpClient,
     private configService: ConfigService
-  ) {
-    this.httpAddress = this.configService.getApiBaseUrl();
-  }
+  ) {}
 
   ////////////////////////
   /////   EXPENSES   /////

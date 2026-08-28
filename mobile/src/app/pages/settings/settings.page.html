@@ -1,60 +1,60 @@
 <form
-  [formGroup]="config"
+  [formGroup]="settingsForm"
   (ngSubmit)="onSubmit()"
   class="flex flex-col gap-6 p-4 max-w-md mx-auto"
 >
-  @for (group of configIterable(); track $index) {
-  <div [formGroupName]="group[0]" class="bg-zinc-600/60 rounded-lg px-3 py-4">
-    <legend class="text-lg font-semibold mb-3">{{ group[0] }}</legend>
-    @for (item of group[1]; track $index) {
-    <div class="flex flex-col gap-1 mb-4">
-      <label class="block text-sm/6 text-(--text-color) font-medium"
-        >{{ item[0] }}</label
+  <fieldset class="bg-zinc-600/60 rounded-lg px-3 py-4">
+
+    <div class="flex flex-col gap-3">
+      <legend class="text-lg font-semibold flex-1">API</legend>
+
+      <div class="flex flex-col gap-1 mb-4">
+        <label for="apiUrl" class="block text-sm/6 text-(--text-color) font-medium">
+          URL
+        </label>
+        <input
+          id="apiUrl"
+          formControlName="apiUrl"
+          class="block w-full rounded-lg bg-white/5 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-violet-500"
+        />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-1 mb-1">
+      <label for="apiTimeout" class="block text-sm/6 text-(--text-color) font-medium"
+        >Timeout (ms)</label
       >
       <input
-        type="text"
-        [formControlName]="item[0]"
+        id="apiTimeout"
+        type="number"
+        formControlName="apiTimeout"
         class="block w-full rounded-lg bg-white/5 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-violet-500"
       />
     </div>
-    }
-  </div>
-  }
-</form>
-<!--<form [formGroup]="settingsForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6 p-4 max-w-md mx-auto">
-  <fieldset>
-    <legend class="text-lg font-semibold mb-3">Application</legend>
-    <div class="flex flex-col gap-2">
-      <label class="text-sm opacity-70">Name</label>
-      <input type="text" [value]="appName" readonly class="bg-(--surface-color) p-2 rounded opacity-60 cursor-not-allowed" />
-    </div>
-    <div class="flex flex-col gap-2 mt-2">
-      <label class="text-sm opacity-70">Version</label>
-      <input type="text" [value]="appVersion" readonly class="bg-(--surface-color) p-2 rounded opacity-60 cursor-not-allowed" />
-    </div>
   </fieldset>
 
-  <fieldset>
-    <legend class="text-lg font-semibold mb-3">API</legend>
-    <div class="flex flex-col gap-2">
-      <label for="apiBaseUrl" class="text-sm opacity-70">Base URL</label>
-      <input id="apiBaseUrl" formControlName="apiBaseUrl" type="text" class="bg-(--surface-color) p-2 rounded" />
-    </div>
-    <div class="flex flex-col gap-2 mt-2">
-      <label for="apiTimeout" class="text-sm opacity-70">Timeout (ms)</label>
-      <input id="apiTimeout" formControlName="apiTimeout" type="number" class="bg-(--surface-color) p-2 rounded" />
-    </div>
-  </fieldset>
-
-  <fieldset>
+  <fieldset class="bg-zinc-600/60 rounded-lg px-3 py-4">
     <legend class="text-lg font-semibold mb-3">Date Requests</legend>
-    <div class="flex flex-col gap-2">
-      <label for="defaultDurationMinutes" class="text-sm opacity-70">Default Duration (minutes)</label>
-      <input id="defaultDurationMinutes" formControlName="defaultDurationMinutes" type="number" class="bg-(--surface-color) p-2 rounded" />
+    <div class="flex flex-col gap-1 mb-1">
+      <label
+        for="defaultDurationMinutes"
+        class="block text-sm/6 text-(--text-color) font-medium"
+        >Default duration (minutes)</label
+      >
+      <input
+        id="defaultDurationMinutes"
+        type="number"
+        formControlName="defaultDurationMinutes"
+        class="block w-full rounded-lg bg-white/5 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-violet-500"
+      />
     </div>
   </fieldset>
 
-  <button type="submit" [disabled]="settingsForm.invalid" class="bg-(--primary-color) text-white p-3 rounded font-medium mt-4 disabled:opacity-50">
+  <button
+    type="submit"
+    [disabled]="settingsForm.invalid"
+    class="bg-(--settings-color) text-(--settings-secondary-color) p-3 rounded font-medium mt-4 disabled:opacity-50"
+  >
     Save
   </button>
-</form>-->
+</form>
