@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-export JAVA_HOME="/snap/android-studio/current/jbr" # /bin/java
+export JAVA_HOME="/usr/lib/jvm/java-21-openjdk" #"/snap/android-studio/current/jbr" # /bin/java
 export PATH="$JAVA_HOME/bin:$PATH"
 
 # ── Prerequisites ──────────────────────────────────────────────
