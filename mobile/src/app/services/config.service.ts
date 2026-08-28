@@ -1,29 +1,20 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Capacitor } from '@capacitor/core';
+import { Preferences } from '@capacitor/preferences';
 import yaml from 'js-yaml';
 import pkg from '../../../package.json';
 
-export interface ApiConfig {
-  baseUrl: string;
-  timeout: number;
-}
+import {
+  ApiConfig,
+  AppConfig,
+  Config,
+  DateRequestsConfig,
+} from '../models/config.model';
 
-export interface AppConfig {
-  name: string;
-  version: string;
-}
-
-export interface DateRequestsConfig {
-  defaultDurationMinutes: number;
-}
-
-export interface Config {
-  api: ApiConfig;
-  app: AppConfig;
-  dateRequests: DateRequestsConfig;
-}
+const STORAGE_KEY = 'appConfig';
 
 @Injectable({
   providedIn: 'root',
@@ -35,29 +26,40 @@ export class ConfigService {
 
   constructor(private http: HttpClient) {}
 
-  public loadConfig(): Observable<Config> {
-    return this.http
+  public loadConfig(): Promise<Config> {
+    return this.prepareConfig();
+  }
+
+  private async prepareConfig(): Promise<Config> {
+    const defaults = await this.loadDefaults();
+
+    const fullConfig: Config = {
+      ...defaults,
+      app: {
+        name: pkg.name,
+        version: pkg.version,
+      },
+    };
+
+    const overrides = await this.readSavedConfig();
+    if (overrides?.api) {
+      fullConfig.api = { ...fullConfig.api, ...overrides.api };
+    }
+    if (overrides?.dateRequests) {
+      fullConfig.dateRequests = {
+        ...fullConfig.dateRequests,
+        ...overrides.dateRequests,
+      };
+    }
+
+    this.configSignal.set(fullConfig);
+    return fullConfig;
+  }
+
+  private loadDefaults(): Promise<Omit<Config, 'app'>> {
+    return firstValueFrom(this.http
       .get('assets/config/config.yaml', { responseType: 'text' })
-      .pipe(
-        map((yamlText) => {
-          const config = yaml.load(yamlText) as Omit<Config, 'app'>;
-          const fullConfig: Config = {
-            ...config,
-            app: {
-              name: pkg.name,
-              version: pkg.version,
-            },
-          };
-          const saved = localStorage.getItem('appConfig');
-          if (saved) {
-            const parsed = JSON.parse(saved) as Partial<Config>;
-            if (parsed.api) fullConfig.api = { ...fullConfig.api, ...parsed.api };
-            if (parsed.dateRequests) fullConfig.dateRequests = { ...fullConfig.dateRequests, ...parsed.dateRequests };
-          }
-          this.configSignal.set(fullConfig);
-          return fullConfig;
-        }),
-      );
+      .pipe(map((yamlText) => yaml.load(yamlText) as Omit<Config, 'app'>)));
   }
 
   public updateApiConfig(baseUrl: string, timeout: number): void {
@@ -71,19 +73,49 @@ export class ConfigService {
   public updateDateRequestsConfig(defaultDurationMinutes: number): void {
     this.configSignal.update((cfg) => {
       if (!cfg) return cfg;
-      return { ...cfg, dateRequests: { ...cfg.dateRequests, defaultDurationMinutes } };
+      return {
+        ...cfg,
+        dateRequests: { ...cfg.dateRequests, defaultDurationMinutes },
+      };
     });
     this.persistConfig();
   }
 
   private persistConfig(): void {
     const cfg = this.configSignal();
-    if (cfg) {
-      localStorage.setItem(
-        'appConfig',
-        JSON.stringify({ api: cfg.api, dateRequests: cfg.dateRequests }),
+    if (!cfg) return;
+    const value = JSON.stringify({ api: cfg.api, dateRequests: cfg.dateRequests });
+    if (Capacitor.isNativePlatform()) {
+      void Preferences.set({ key: STORAGE_KEY, value }).catch((err) =>
+        console.error('[ConfigService]: Failed to persist config', err),
       );
+    } else {
+      localStorage.setItem(STORAGE_KEY, value);
     }
+  }
+
+  private async readSavedConfig(): Promise<Partial<Config> | null> {
+    if (Capacitor.isNativePlatform()) {
+      try {
+        const { value } = await Preferences.get({ key: STORAGE_KEY });
+        return this.parseSavedConfig(value);
+      } catch (err) {
+        console.error('[ConfigService]: Failed to read saved config', err);
+        return null;
+      }
+    }
+    return this.parseSavedConfig(localStorage.getItem(STORAGE_KEY));
+  }
+
+  private parseSavedConfig(value: string | null): Partial<Config> | null {
+    if (!value) return null;
+    try {
+      const parsed = JSON.parse(value) as Partial<Config>;
+      if (parsed && typeof parsed === 'object') return parsed;
+    } catch (err) {
+      console.error('[ConfigService]: Invalid saved config, using defaults', err);
+    }
+    return null;
   }
 
   public getApiBaseUrl(): string {

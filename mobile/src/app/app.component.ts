@@ -15,6 +15,8 @@ export class AppComponent {
   constructor() {}
 
   ngOnInit() {
-    this.configService.loadConfig().subscribe();
+      this.configService.loadConfig().then(
+        () => console.info("[app]: Configuration loaded")
+    );
   }
 }
