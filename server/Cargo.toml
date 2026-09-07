@@ -10,3 +10,7 @@ serde = { version = "^1", features = ["derive"] }
 actix-web = "^4"
 actix-cors = "0.7"
 thiserror = "2"
+pin-project = "1"
+tracing = "0.1"
+tracing-subscriber = {version = "0.3", features = ["env-filter"]}
+tokio = { version = "1", features = ["rt", "macros", "rt-multi-thread"] }

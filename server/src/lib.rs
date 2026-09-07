@@ -1,4 +1,5 @@
 pub mod core;
+pub mod middlewares;
 pub mod modules;
 
 pub type Error = Box<dyn std::error::Error>;
