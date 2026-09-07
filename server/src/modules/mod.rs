@@ -13,10 +13,6 @@ use actix_web::{
 };
 use thiserror::Error;
 
-pub fn logging(msg: &str) {
-    println!("{msg}");
-}
-
 #[derive(Error, Debug)]
 pub enum ApiError {
     #[error(transparent)]

@@ -7,26 +7,27 @@ use crate::modules::groceries::{
     error::GroceriesError,
     model::{EditGroceryItemRequest, GroceryItem, NewGroceryItemRequest},
 };
-use crate::modules::{ApiError, ApiResult, logging};
+use crate::modules::{ApiError, ApiResult};
 use crate::{core::db::connection::DbConnector, modules::groceries::db::GroceryItemDb};
+use tracing::{error, instrument};
 
+#[instrument(level = "debug", err(level = "debug"), skip(db_data))]
 pub async fn get_groceries(db_data: Data<DbConnector>) -> ApiResult<Json<Vec<GroceryItem>>> {
-    logging("GET /groceries");
     let groceries_vec = GroceryItem::fetch_from_db(&db_data).await;
     match groceries_vec {
         Ok(groceries_vec) => Ok(Json(groceries_vec)),
         Err(err) => {
-            logging(&err.to_string());
+            error!(error = %err, "failed to fetch groceries");
             Err(ApiError::from(GroceriesError::SqlError(err.to_string())))
         }
     }
 }
 
+#[instrument(level = "debug", err(level = "debug"), skip(to_edit, db_conn))]
 pub async fn edit_grocery(
     to_edit: Json<EditGroceryItemRequest>,
     db_conn: Data<DbConnector>,
 ) -> ApiResult<impl Responder> {
-    logging("PATCH groceries");
     let to_edit = to_edit.into_inner();
     let db_conn = db_conn.into_inner();
 
@@ -34,17 +35,17 @@ pub async fn edit_grocery(
     match query_result {
         Ok(_) => Ok(HttpResponse::Ok()),
         Err(err) => {
-            logging(&err.to_string());
+            error!(error = %err, "failed to edit grocery");
             Err(ApiError::from(GroceriesError::SqlError(err.to_string())))
         }
     }
 }
 
+#[instrument(level = "debug", err(level = "debug"), skip(new_grocery_item, db_conn))]
 pub async fn create_grocery(
     new_grocery_item: Json<NewGroceryItemRequest>,
     db_conn: Data<DbConnector>,
 ) -> ApiResult<impl Responder> {
-    logging("POST /groceries");
     let new_grocery_item = new_grocery_item.into_inner();
     let db_conn = db_conn.into_inner();
 
@@ -53,12 +54,13 @@ pub async fn create_grocery(
     match query_result {
         Ok(_) => Ok(HttpResponse::Created()),
         Err(err) => {
-            logging(&err.to_string());
+            error!(error = %err, "failed to create grocery");
             Err(ApiError::from(GroceriesError::SqlError(err.to_string())))
         }
     }
 }
 
+#[instrument(level = "debug", err(level = "debug"), skip(db_conn))]
 pub async fn delete_grocery(
     grocery_item_name: Path<String>,
     db_conn: Data<DbConnector>,
@@ -70,7 +72,7 @@ pub async fn delete_grocery(
     match res {
         Ok(_) => Ok(HttpResponse::Ok()),
         Err(err) => {
-            logging(&err.to_string());
+            error!(error = %err, "failed to delete grocery");
             Err(ApiError::from(GroceriesError::SqlError(err.to_string())))
         }
     }
