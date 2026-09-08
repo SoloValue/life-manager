@@ -1,23 +1,44 @@
-import { effect, Injectable, signal } from "@angular/core";
+import { Injectable, signal } from "@angular/core";
 import { GroceryItem } from "src/models/api.interface";
 import { HttpService } from "./http.service";
+import { StorageService } from "./storage.service";
+
+const STORAGE_KEY = "groceries";
 
 @Injectable({
   providedIn: "root",
 })
 export class GroceriesService {
   public groceryList = signal<GroceryItem[] | null>(null);
-  constructor(private httpService: HttpService) {}
+  constructor(
+    private httpService: HttpService,
+    private storage: StorageService,
+  ) {}
 
-  public refreshGroceries() {
+  public async refreshGroceries() {
+    await this.loadCachedGroceries();
     this.httpService.getGroceries().subscribe((resp) => {
       if (resp.ok) {
         // TODO make sure the body is correct
         this.groceryList.set(resp.body as any);
-      } else {
-        this.groceryList.set(null);
+        this.persistList();
       }
+      // on failure keep the cached list (offline fallback)
     });
+  }
+
+  private async loadCachedGroceries() {
+    const cached = await this.storage.get<GroceryItem[]>(STORAGE_KEY);
+    if (cached !== null) {
+      this.groceryList.set(cached);
+    }
+  }
+
+  private persistList() {
+    const list = this.groceryList();
+    if (list !== null) {
+      void this.storage.set(STORAGE_KEY, list);
+    }
   }
 
   public editGroceryItem(name: string, newValue: boolean) {

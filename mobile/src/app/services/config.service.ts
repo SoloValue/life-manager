@@ -2,8 +2,6 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Capacitor } from '@capacitor/core';
-import { Preferences } from '@capacitor/preferences';
 import yaml from 'js-yaml';
 import pkg from '../../../package.json';
 
@@ -13,6 +11,7 @@ import {
   Config,
   DateRequestsConfig,
 } from '../models/config.model';
+import { StorageService } from './storage.service';
 
 const STORAGE_KEY = 'appConfig';
 
@@ -24,7 +23,7 @@ export class ConfigService {
 
   public config = this.configSignal.asReadonly();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private storage: StorageService) {}
 
   public loadConfig(): Promise<Config> {
     return this.prepareConfig();
@@ -41,7 +40,7 @@ export class ConfigService {
       },
     };
 
-    const overrides = await this.readSavedConfig();
+    const overrides = await this.storage.get<Partial<Config>>(STORAGE_KEY);
     if (overrides?.api) {
       fullConfig.api = { ...fullConfig.api, ...overrides.api };
     }
@@ -92,38 +91,10 @@ export class ConfigService {
   private persistConfig(): void {
     const cfg = this.configSignal();
     if (!cfg) return;
-    const value = JSON.stringify({ api: cfg.api, dateRequests: cfg.dateRequests });
-    if (Capacitor.isNativePlatform()) {
-      void Preferences.set({ key: STORAGE_KEY, value }).catch((err) =>
-        console.error('[ConfigService]: Failed to persist config', err),
-      );
-    } else {
-      localStorage.setItem(STORAGE_KEY, value);
-    }
-  }
-
-  private async readSavedConfig(): Promise<Partial<Config> | null> {
-    if (Capacitor.isNativePlatform()) {
-      try {
-        const { value } = await Preferences.get({ key: STORAGE_KEY });
-        return this.parseSavedConfig(value);
-      } catch (err) {
-        console.error('[ConfigService]: Failed to read saved config', err);
-        return null;
-      }
-    }
-    return this.parseSavedConfig(localStorage.getItem(STORAGE_KEY));
-  }
-
-  private parseSavedConfig(value: string | null): Partial<Config> | null {
-    if (!value) return null;
-    try {
-      const parsed = JSON.parse(value) as Partial<Config>;
-      if (parsed && typeof parsed === 'object') return parsed;
-    } catch (err) {
-      console.error('[ConfigService]: Invalid saved config, using defaults', err);
-    }
-    return null;
+    void this.storage.set(STORAGE_KEY, {
+      api: cfg.api,
+      dateRequests: cfg.dateRequests,
+    });
   }
 
   public getApiBaseUrl(): string {
