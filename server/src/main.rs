@@ -67,7 +67,7 @@ async fn main() -> Result<()> {
     .keep_alive(std::time::Duration::from_secs(300))
     .shutdown_timeout(2)
     .workers(4)
-    .bind(("127.0.0.1", port))?
+    .bind(("0.0.0.0", port))?
     .run()
     .await?;
 
